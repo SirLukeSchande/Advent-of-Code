@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------#
 function final_pos()
     pos = [0,0]
-    commands = readlines("input2.dat")
+    commands = readlines("input/input2.dat")
 
     for cmd in commands
         direction, unit_str = split(cmd, ' ')
@@ -33,7 +33,7 @@ println("In the end, the submarine is at ($x,$y). So the answer is $(x * y).")
 function correct_final_pos()
     pos = [0,0]
     aim = 0
-    commands = readlines("input2.dat")
+    commands = readlines("input/input2.dat")
 
     for cmd in commands
         direction, unit_str = split(cmd, ' ')

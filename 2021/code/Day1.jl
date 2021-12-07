@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------#
 
 function larger_measurements()
-    sonar_input = map(l -> parse(Int, l), readlines("input1.dat"))
+    sonar_input = map(l -> parse(Int, l), readlines("input/input1.dat"))
 
     return count(diff(sonar_input) .> 0)
 end
@@ -26,7 +26,7 @@ function walking_window(func::Function, x::AbstractVector, n::Int)
 end
 
 function larger_sum_measurements()
-    sonar_input = map(l -> parse(Int, l), readlines("input1.dat"))
+    sonar_input = map(l -> parse(Int, l), readlines("input/input1.dat"))
 
     sonar_sum3 = walking_window(sum, sonar_input, 3)
 
