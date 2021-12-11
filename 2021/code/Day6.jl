@@ -6,14 +6,14 @@ mutable struct Lanternfish
     timer::Int64
 end
 
-mutable struct School
+mutable struct ExplicitSchool
     fish::Vector{Lanternfish}
     day::Int64
 end
 
-School(list::String) = School(map(t -> Lanternfish(parse(Int64, t)), split(list, ',')), 0)
+ExplicitSchool(list::String) = ExplicitSchool(map(t -> Lanternfish(parse(Int64, t)), split(list, ',')), 0)
 
-function Base.show(io::Core.IO, s::School)
+function Base.show(io::Core.IO, s::ExplicitSchool)
     day_str = if s.day == 0 
         "Initial state: " 
     elseif s.day  == 1 
@@ -31,9 +31,9 @@ function Base.show(io::Core.IO, s::School)
     nothing
 end
 
-read_school(path::String) = School(readline(path))
+read_explicit_school(path::String) = ExplicitSchool(readline(path))
 
-function step!(s::School)
+function step!(s::ExplicitSchool)
     new_fish = Lanternfish[]
     for f in s.fish
         if f.timer > 0
@@ -50,7 +50,7 @@ function step!(s::School)
     nothing
 end
 
-function simulate!(s::School, days::Int64, verbose=false)
+function simulate!(s::ExplicitSchool, days::Int64, verbose=false)
     for _ in 1:days
         step!(s)
         verbose && println(s)
@@ -59,13 +59,13 @@ function simulate!(s::School, days::Int64, verbose=false)
     nothing
 end
 
-function fish_after_days!(s::School, days::Int64)
+function fish_after_days!(s::ExplicitSchool, days::Int64)
     simulate!(s, days)
 
     return length(s.fish)
 end
 
-s = read_school("input/input6.dat")
+s = read_explicit_school("input/input6.dat")
 days = 80
 num_fish = fish_after_days!(s, days)
 
@@ -75,3 +75,50 @@ println("The school has $num_fish fish after $days days.")
 #                               part 2                               #
 # --------------------------------------------------------------------#
 
+mutable struct School
+    timers::Vector{Int64}
+end
+
+function School(list::String)
+    timers = zeros(Int64, 9)
+    for t in parse.(Int64, split(list, ','))
+        timers[t + 1] += 1
+    end
+
+    return School(timers)
+end
+
+read_school(path::String) = School(readline(path))
+
+function step!(s::School)
+    new_timers = Vector{Int64}(undef, 9)
+
+    new_timers[1:8] = s.timers[2:9]
+    new_timers[7] += s.timers[1] 
+    new_timers[9] = s.timers[1]
+
+    s.timers = new_timers
+    nothing
+end
+
+function simulate!(s::School, days::Int64)
+    for _ in 1:days
+        step!(s)
+    end
+    
+    nothing
+end
+
+
+function fish_after_days!(s::School, days::Int64)
+    simulate!(s, days)
+
+    return sum(s.timers)
+end
+
+
+s = read_school("input/input6.dat")
+days = 256
+num_fish = fish_after_days!(s, days)
+
+println("The school has $num_fish fish after $days days.")
