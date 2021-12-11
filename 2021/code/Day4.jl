@@ -131,15 +131,26 @@ println("The answer is $answer.")
 #                               Part 2                               #
 # --------------------------------------------------------------------#
 
+println("\n\n")
 
 function find_last_completed()
     rand_numbers, bs = read_file()
+    is_last = NaN
 
     for n in rand_numbers
         mark!.(bs, n)
         if all(completed.(bs))
-            winner = only(bs[completed.(bs)])
+            winner = bs[is_last]
             return n, winner, n * sum(winner)
+        end
+        if count(.!completed.(bs)) == 1
+            is_last = only(eachindex(bs)[.!completed.(bs)])            
         end
     end
 end
+
+n, winner, answer = find_last_completed()
+println("The last number called was $n. The last board to finish is:\n")
+println(winner)
+println("The answer is $answer.")
+
